@@ -32,4 +32,10 @@
         a.remark
     </sql>
 
+    <update id="delDict" parameterType="String">
+        UPDATE sys_dict a
+        SET a.del_flag = "0"
+        WHERE a.id = #{id}
+    </update>
+
 </mapper>
