@@ -1,5 +1,6 @@
 package com.demo.service.sys;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.demo.entity.sys.Dict;
 
@@ -11,8 +12,12 @@ public interface DictService extends IService<Dict> {
     void updateDict(Dict dict);
     void del(String id);
 
-    Dict getOfLabel(String label);
-    List<Dict> getOfValue(String value);
+    Page<Dict> listPage(Dict entity, Integer pageNum, Integer pageSize);
+
+    List<Dict> listOfLabel(String label);
+
+    Dict listOfValue(String value);
+
     List<Dict> listOfStyle(String style);
 //    List<Dict> listPage();
 }

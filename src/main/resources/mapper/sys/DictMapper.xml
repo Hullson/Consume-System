@@ -10,9 +10,9 @@
         <result column="style" property="style" />
         <result column="description" property="description" />
         <result column="create_by" property="createBy" />
-        <result column="create_time" property="createTime" />
+        <result column="create_date" property="createDate" />
         <result column="update_by" property="updateBy" />
-        <result column="update_time" property="updateTime" />
+        <result column="update_date" property="updateDate" />
         <result column="del_flag" property="delFlag" />
         <result column="remark" property="remark" />
     </resultMap>
@@ -25,9 +25,9 @@
         a.style,
         a.description,
         a.create_by,
-        a.create_time,
+        a.create_date,
         a.update_by,
-        a.update_time,
+        a.update_date,
         a.del_flag,
         a.remark
     </sql>
@@ -37,5 +37,57 @@
         SET a.del_flag = "0"
         WHERE a.id = #{id}
     </update>
+
+    <select id="listPage" resultMap="BaseResultMap">
+        SELECT
+            <trim>
+                <include refid="BaseColumns"></include>
+            </trim>
+        FROM sys_dict a
+        <where>
+            <if test="entity != null">
+                <if test="entity.label != null and entity.label != ''">
+                    a.label = #{entity.label}
+                </if>
+                <if test="entity.value != null and entity.value != ''">
+                    a.value = #{entity.value}
+                </if>
+                <if test="entity.style != null and entity.style != ''">
+                    a.style = #{entity.style}
+                </if>
+            </if>
+            AND del_flag = "0"
+        </where>
+    </select>
+
+    <select id="listOfLabel" resultMap="BaseResultMap">
+        SELECT
+            <trim>
+                <include refid="BaseColumns"></include>
+            </trim>
+        FROM sys_dict a
+        WHERE a.label = #{label}
+        AND a.del_flag = "0"
+    </select>
+
+    <select id="listOfValue" resultMap="BaseResultMap">
+        SELECT
+            <trim>
+                <include refid="BaseColumns"></include>
+            </trim>
+        FROM sys_dict a
+        WHERE a.value = #{value}
+        AND a.del_flag = "0"
+    </select>
+
+    <select id="listOfStyle" resultMap="BaseResultMap">
+        SELECT
+            <trim>
+                <include refid="BaseColumns"></include>
+            </trim>
+        FROM sys_dict a
+        WHERE a.style = #{style}
+        AND a.del_flag = "0"
+    </select>
 
 </mapper>

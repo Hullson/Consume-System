@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.demo.mapper.sys.UserMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.demo.entity.sys.User">
+        <result column="u.id" property="id" />
+        <result column="u.user_type" property="userType" />
+        <result column="u.nickname" property="nickname" />
+        <result column="u.gender" property="gender" />
+        <result column="u.create_by" property="createBy" />
+        <result column="u.create_date" property="createDate" />
+        <result column="u.update_by" property="updateBy" />
+        <result column="u.update_date" property="updateDate" />
+        <result column="u.del_flag" property="delFlag" />
+        <result column="u.remark" property="remark" />
+        <association property="account" javaType="com.demo.entity.sys.Account">
+            <result column="a.id" property="id"></result>
+            <result column="a.account" property="account"></result>
+        </association>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="BaseColumns">
+        u.id as "u.id",
+        u.user_type as "u.user_type",
+        u.nickname as "u.nickname",
+        u.gender as "u.gender",
+        u.create_by as "u.create_by",
+        u.create_date as "u.create_date",
+        u.update_by as "u.update_by",
+        u.update_date as "u.update_date",
+        u.del_flag as "u.del_flage",
+        u.remark as "u.remark"
+    </sql>
+
+    <sql id="AccountBaseColumns">
+        a.id as "a.id",
+        a.account as "a.account"
+    </sql>
+
+    <insert id="saveUser">
+        INSERT INTO comm_user SET
+        id = #{id},
+        account_id = #{account.id},
+        user_type = #{userType},
+        nickname = #{nickname},
+        gender = #{gender},
+        create_by = #{createBy},
+        create_date = #{createDate},
+        update_by = #{updateBy},
+        update_date = #{updateDate},
+        del_flag = #{delFlag},
+        remark = #{remark}
+    </insert>
+
+    <delete id="delUser">
+        UPDATE comm_user SET del_flag = "1", update_date = NOW() WHERE id = #{userId}
+    </delete>
+    
+    <update id="updateUser">
+        UPDATE comm_user SET
+         <trim suffixOverrides=",">
+             <if test="entity.userType != null and entity.userType != ''">
+                 user_type = #{entit.userType}
+             </if>
+             <if test="entity.nickname != null and entity.nickname != ''">
+                 nickname = #{entit.nickname}
+             </if>
+             <if test="entity.gender != null and entity.gender != ''">
+                 gender = #{entit.gender}
+             </if>
+             <if test="entity.updateDate != null">
+                 update_date = #{entit.updateDate}
+             </if>
+             <if test="entity.updateBy != null and entity.updateBy != ''">
+                 update_by = #{entit.updateBy}
+             </if>
+         </trim>
+        WHERE id = #{entity.id}
+    </update>
+
+    <select id="getUserOfAccount" resultMap="BaseResultMap">
+        SELECT
+            <trim>
+                <include refid="BaseColumns" />
+            </trim>
+            <trim prefix=",">
+                <include refid="AccountBaseColumns" />
+            </trim>
+        FROM comm_user u
+        RIGHT JOIN comm_account a
+        ON u.account_id = a.id
+        WHERE u.account_id = #{accountId}
+        AND u.del_flag = "0"
+    </select>
+
+    <select id="listPage" resultMap="BaseResultMap">
+        SELECT
+        <trim>
+            <include refid="BaseColumns" />
+        </trim>
+        <trim prefix=",">
+            <include refid="AccountBaseColumns" />
+        </trim>
+        FROM comm_user u
+        RIGHT JOIN comm_account a
+        ON u.account_id = a.id
+        <where>
+            <if test="entity != null">
+                <if test="entity.userType != null and entity.userType != ''">
+                    u.user_type = #{entity.userType}
+                </if>
+                <if test="entity.nickname != null and entity.nickname != ''">
+                    u.nickname = #{entity.nickname}
+                </if>
+                <if test="entity.gender != null and entity.gender != ''">
+                    u.gender = #{entity.gender}
+                </if>
+            </if>
+            AND u.del_flag = "0"
+        </where>
+    </select>
+</mapper>

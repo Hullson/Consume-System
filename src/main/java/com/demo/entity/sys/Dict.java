@@ -1,7 +1,7 @@
 package com.demo.entity.sys;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.demo.business.EntityUtil;
+import com.demo.business.EntityUtils;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
@@ -16,7 +16,7 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @Accessors(chain = true)
 @TableName("sys_dict")
-public class Dict extends EntityUtil {
+public class Dict extends EntityUtils {
     private String label;           // 字典标签
     private String value;           // 字典数据值
     private String style;           // 字典类型

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.demo.mapper.consume.RecordsMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.demo.entity.consume.Records">
+        <result column="id" property="id" />
+        <result column="item" property="item" />
+        <result column="style" property="style" />
+        <result column="amount" property="amount" />
+        <result column="amount_date" property="amountDate" />
+        <result column="description" property="description" />
+        <result column="create_by" property="createBy" />
+        <result column="create_date" property="createDate" />
+        <result column="update_by" property="updateBy" />
+        <result column="update_date" property="updateDate" />
+        <result column="del_flag" property="delFlag" />
+        <result column="remark" property="remark" />
+        <association property="user" javaType="com.demo.entity.sys.User">
+            <result column="id" property="id" />
+            <result column="user_type" property="id" />
+            <result column="nickname" property="nickname" />
+        </association>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="BaseColumns">
+        a.id,
+        a.item,
+        a.style,
+        a.amount,
+        a.amount_date,
+        a.description,
+        a.create_by,
+        a.create_date,
+        a.update_by,
+        a.update_date,
+        a.del_flag,
+        a.remark
+    </sql>
+
+    <sql id="UserBaseColumns">
+        u.id as "u.id",
+        u.account as "u.account"
+    </sql>
+
+    <insert id="saveRecords">
+        INSERT INTO records SET
+        id = #{id},
+        user_id = #{user.id},
+        item = #{item},
+        style = #{style},
+        amount = #{amount},
+        amount_date = #{amountDate},
+        description = #{description},
+        create_by = #{createBy},
+        create_date = #{createDate},
+        update_by = #{updateBy},
+        update_date = #{updateDate},
+        del_flag = #{delFlag},
+        remark = #{remark}
+    </insert>
+
+    <update id="delRecords">
+        UPDATE records SET del_flag = "0" WHERE id = #{id}
+    </update>
+
+    <update id="updateRecords">
+        UPDATE records SET
+        <if test="entity != null">
+            <if test="entity.item != null and entity.item != ''">
+                item = #{entity.item}
+            </if>
+            <if test="entity.style != null and entity.style != ''">
+                style = #{entity.style}
+            </if>
+            <if test="entity.amount != null">
+                amount = #{entity.amount}
+            </if>
+            <if test="entity.amountDate != null">
+                amount_date = #{entity.amount_date}
+            </if>
+            <if test="entity.description != null and description != ''">
+                description = #{entity.description}
+            </if>
+            <if test="entity.updateBy != null and updateBy != ''">
+                update_by = #{entity.updateBy}
+            </if>
+            <if test="entity.updateDate != null">
+                update_date = #{entity.updateDate}
+            </if>
+        </if>
+        WHERE id = #{entity.id}
+        AND del_flag = "0"
+    </update>
+
+    <select id="listPage" resultMap="BaseResultMap">
+        SELECT
+            <trim>
+                <include refid="BaseColumns"></include>
+            </trim>
+            <trim prefix=",">
+                <include refid="UserBaseColumns"></include>
+            </trim>
+        FROM records a
+        LEFT JOIN comm_user u
+        <where>
+            <if test="entity != null">
+                <if test="entity.item != null and entity.item != ''">
+                    item = #{entity.item}
+                </if>
+                <if test="entity.style != null and entity.style != ''">
+                    style = #{entity.style}
+                </if>
+                <if test="entity.amount != null">
+                    amount = #{entity.amount}
+                </if>
+                <if test="entity.amountDate != null">
+                    amountDate = #{entity.amount_date}
+                </if>
+                <if test="entity.description != null and description != ''">
+                    description = #{entity.description}
+                </if>
+                <if test="entity.user.id != null and entity.user.id != ''">
+                    user_id = #{entity.user.id}
+                </if>
+                <if test="entity.createDate != null">
+                    create_date = #{entity.createDate}
+                </if>
+            </if>
+            AND del_flag = "0"
+        </where>
+    </select>
+
+</mapper>
